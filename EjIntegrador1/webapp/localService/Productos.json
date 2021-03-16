@@ -1,0 +1,36 @@
+{
+    "Productos": [  
+    
+        {
+            "Producto" : "Prueba 1" ,
+            "Proveedor" : "Watts" ,
+            "Tamaño" : "16",
+            "Peso" : "0.9" ,
+            "Valor" :"3000"
+        },
+
+        {
+            "Producto" : "Prueba 2 " ,
+            "Proveedor" : "Vivo" ,
+            "Tamaño" : "8",
+            "Peso" : "1" ,
+            "Valor" :"4000"
+        },
+
+        {
+            "Producto" : "Prueba 3 " ,
+            "Proveedor" : "CCU" ,
+            "Tamaño" : "20",
+            "Peso" : "3" ,
+            "Valor" :"7000"
+        },
+
+        {
+            "Producto" : "Prueba 4" ,
+            "Proveedor" : "Coca-Cola Company" ,
+            "Tamaño" : "90",
+            "Peso" : "12" ,
+            "Valor" :"9000"
+        }
+    
+]}

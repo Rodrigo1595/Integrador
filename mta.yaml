@@ -1,0 +1,50 @@
+_schema-version: "3.2"
+ID: EjercicioIntegrador1
+version: 0.0.1
+modules:
+- name: ejerciciointegrador1-approuter
+  type: approuter.nodejs
+  path: ejerciciointegrador1-approuter
+  requires:
+  - name: EjercicioIntegrador1_html_repo_runtime
+  parameters:
+    disk-quota: 256M
+    memory: 256M
+- name: EjercicioIntegrador1_ui_deployer
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: EjercicioIntegrador1_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - EjIntegrador1-content.zip
+      name: EjIntegrador1
+      target-path: resources/
+- name: EjIntegrador1
+  type: html5
+  path: EjIntegrador1
+  build-parameters:
+    builder: custom
+    commands:
+    - npm run build
+    supported-platforms: []
+resources:
+- name: EjercicioIntegrador1_html_repo_runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: EjercicioIntegrador1_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm install

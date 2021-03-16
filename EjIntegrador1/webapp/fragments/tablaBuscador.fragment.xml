@@ -1,0 +1,66 @@
+<core:FragmentDefinition xmlns="sap.m"
+xmlns:core="sap.ui.core">
+    <OverflowToolbar >
+                   <content>
+                        <Title text='{i18n>tituloToolbar}' level="H2"></Title>
+                        <Input id="idFiltroFecha" width="20%" type='Date'/>
+                        <ComboBox id="idFiltroProveedor" width="20%" items="{modeloProductos>/Productos}">
+                          	<core:Item text="{modeloProductos>Proveedor}" />
+                        </ComboBox>
+                        <Input id="idFiltroPais" placeholder='{i18n>toolbarBuscar}'  width="20%"/>
+                        <Button press="onPressBuscar" text="{i18n>botonBuscar} " width="10%" type="Emphasized"></Button>
+                        <Button text="{i18n>idioma}" press="cambiarIdioma" width="10%" type="Emphasized"/> 
+                    </content>
+    </OverflowToolbar>
+        
+    <Table visible="false" id="idTablaValores" items='{modeloProductos>/Productos}' >
+        <headerToolbar>
+            <OverflowToolbar >
+                <SearchField placeholder="{i18n>phBusquedaFiltro}" width="50%" liveChange="onChangeBuscar"></SearchField>
+            </OverflowToolbar>
+        </headerToolbar>
+        
+        <columns>
+            <!-- Rellenar Columnas -->
+            <Column>
+            <Text text='{i18n>colProducto}'></Text>
+            </Column>
+            <Column>
+            <Text text='{i18n>colProveedor}'></Text>
+            </Column>
+            <Column>
+            <Text text='{i18n>colTamaño}'></Text>
+            </Column>
+            <Column>
+            <Text text='{i18n>colPeso}'></Text>
+            </Column>
+            <Column>
+            <Text text='{i18n>colValor}'></Text>
+            </Column>
+        </columns>
+        <items>
+            <ColumnListItem press="onPressCell" type="Active">
+            <!-- Rellenar Celdas -->
+                <cells >
+                    <Text text='{modeloProductos>Producto}' ></Text>
+                    <Text text='{modeloProductos>Proveedor}'></Text>
+                    <Text text='{modeloProductos>Tamaño}'></Text>
+                    <ObjectNumber
+						number="{modeloProductos>Peso}"
+						unit="Kg"
+						state="{
+								path: 'modeloProductos>Peso',
+							formatter: '.Formatear.formatPeso'
+						}" />
+                    <ObjectNumber
+							number="{
+								path:'modeloProductos>Valor',
+								formatter: '.Formatear.formatValor'
+							}"
+							unit="EUR" />
+                </cells>
+            </ColumnListItem>
+         </items>
+   </Table>
+
+</core:FragmentDefinition>

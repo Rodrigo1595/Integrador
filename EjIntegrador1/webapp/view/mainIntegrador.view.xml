@@ -1,0 +1,8 @@
+<mvc:View controllerName="EjIntegrador1.EjIntegrador1.controller.mainIntegrador" 
+xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Page id="page" title="{i18n>title}">
+		<content>
+            <core:Fragment id="frBuscadorTabla" fragmentName="EjIntegrador1.EjIntegrador1.fragments.tablaBuscador" type="XML"/>
+        </content>
+	</Page>
+</mvc:View>
