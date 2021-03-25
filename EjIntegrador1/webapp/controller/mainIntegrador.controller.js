@@ -6,12 +6,15 @@ sap.ui.define([
         "sap/m/MessageBox",
         "sap/ui/model/Filter",
         "sap/ui/model/FilterOperator",
-        "EjIntegrador1/EjIntegrador1/util/Formatter"
+        "EjIntegrador1/EjIntegrador1/util/Formatter",
+        'sap/m/library',
+        'sap/ui/Device',
+        'sap/ui/model/Sorter'
 	],
 	/**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-	function (Controller,JSONModel,Services,Constants,MessageBox,Filter,FilterOperator,Formatter) {
+	function (Controller,JSONModel,Services,Constants,MessageBox,Filter,FilterOperator,Formatter,mLibrary,DeviceAcceleration,Sorter) {
 		"use strict";
 
 		return Controller.extend("EjIntegrador1.EjIntegrador1.controller.mainIntegrador", {
@@ -21,8 +24,12 @@ sap.ui.define([
             // Cargar apenas abra la pagina
 			onInit: function () {
                 this.loadModelBase();
+             
+
             },
             
+
+
             loadModelBase: async function(){
                 //Crear modelo con promesa asincrona
                 //Usar component para mas detallado
@@ -38,6 +45,9 @@ sap.ui.define([
             onPressBuscar: function(){
                 //Llamar Fragment para buscar x id
                 let sFragmentId = this.getView().createId(Constants.ids.FRAGMENTS.frTabla);
+
+                //Pasar Fragmento - Pasar id
+
                 //Ingresar datos al modelo de filtrado
                 let oFiltros = {
                     Fecha:sap.ui.core.Fragment.byId(sFragmentId, Constants.ids.FRAGMENTS.filtroFecha).getValue(),
@@ -112,6 +122,36 @@ sap.ui.define([
                      }
                 this._oFragment.open();
             
+            },
+            
+            onSort: function(){
+                this.createViewSettingsDialog('EjIntegrador1.EjIntegrador1.fragments.SortDialog').open()
+            },
+
+            createViewSettingsDialog: function(sDialogFragmentName){
+                var oDialog;
+                    oDialog = sap.ui.xmlfragment(sDialogFragmentName,this);
+                        this.getView().addDependent(oDialog);
+                        oDialog.setFilterSearchOperator(mLibrary.StringFilterOperator.Contains);
+                    if(DeviceAcceleration.system.desktop){
+                        oDialog.addStyleClass("sapUISizeCompact");
+                    }
+                    return oDialog
+            },
+
+            onSortDialogConfirm: function(oEvent){
+                let sFragmentId = this.getView().createId(Constants.ids.FRAGMENTS.frTabla);
+                var oTable = sap.ui.core.Fragment.byId(sFragmentId, Constants.ids.FRAGMENTS.tablaValores),
+                mParams = oEvent.getParameters(),
+                oBinding=oTable.getBinding("items"),
+                sPath,
+                bDescending,
+                aSorters=[];
+
+                sPath= mParams.sortItem.getKey();
+                bDescending = mParams.sortDescending;
+                aSorters.push(new Sorter(sPath,bDescending));
+                oBinding.sort(aSorters);
             },
 
             onCloseDialog: function(){

@@ -1,6 +1,6 @@
 <core:FragmentDefinition xmlns="sap.m"
 xmlns:core="sap.ui.core">
-    <OverflowToolbar >
+    <OverflowToolbar>
                    <content>
                         <Title text='{i18n>tituloToolbar}' level="H2"></Title>
                         <Input id="idFiltroFecha" width="20%" type='Date'/>
@@ -17,6 +17,7 @@ xmlns:core="sap.ui.core">
         <headerToolbar>
             <OverflowToolbar >
                 <SearchField placeholder="{i18n>phBusquedaFiltro}" width="50%" liveChange="onChangeBuscar"></SearchField>
+                <Button tooltip="Ordenar" icon="sap-icon://sort" press="onSort"/>
             </OverflowToolbar>
         </headerToolbar>
         
