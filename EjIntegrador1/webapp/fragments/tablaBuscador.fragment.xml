@@ -45,7 +45,10 @@ xmlns:core="sap.ui.core">
                 <cells >
                     <Text text='{modeloProductos>Producto}' ></Text>
                     <Text text='{modeloProductos>Proveedor}'></Text>
-                    <Text text='{modeloProductos>Tamaño}'></Text>
+                    <ObjectNumber
+                        number="{modeloProductos>Tamaño}"
+                        unit="Cm"
+                     ></ObjectNumber>
                     <ObjectNumber
 						number="{modeloProductos>Peso}"
 						unit="Kg"

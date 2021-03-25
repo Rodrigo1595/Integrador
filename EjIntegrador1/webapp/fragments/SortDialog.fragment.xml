@@ -2,6 +2,10 @@
     <ViewSettingsDialog confirm="onSortDialogConfirm">
         <sortItems>
             <ViewSettingsItem text="Producto" key="Producto" selected='true'></ViewSettingsItem>
+            <ViewSettingsItem text="Proveedor" key="Proveedor" ></ViewSettingsItem>
+            <ViewSettingsItem text="Tamaño" key="Tamaño" ></ViewSettingsItem>
+            <ViewSettingsItem text="Peso" key="Peso" ></ViewSettingsItem>
+            <ViewSettingsItem text="Valor" key="Valor" ></ViewSettingsItem>
         </sortItems>
     </ViewSettingsDialog>
 </core:FragmentDefinition>    

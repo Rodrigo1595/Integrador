@@ -2,35 +2,35 @@
     "Productos": [  
     
         {
-            "Producto" : "Prueba 1" ,
+            "Producto" : "Nectar Durazno" ,
             "Proveedor" : "Watts" ,
-            "Tamaño" : "16",
-            "Peso" : "0.9" ,
-            "Valor" :"3000"
+            "Tamaño" : 16,
+            "Peso" : 0.9 ,
+            "Valor" :3000
         },
 
         {
-            "Producto" : "Prueba 2 " ,
+            "Producto" : "Jugo de Papaya " ,
             "Proveedor" : "Vivo" ,
-            "Tamaño" : "8",
-            "Peso" : "1" ,
-            "Valor" :"4000"
+            "Tamaño" : 8,
+            "Peso" : 1 ,
+            "Valor" :4000
         },
 
         {
-            "Producto" : "Prueba 3 " ,
+            "Producto" : "Cerveza Heineken " ,
             "Proveedor" : "CCU" ,
-            "Tamaño" : "20",
-            "Peso" : "3" ,
-            "Valor" :"7000"
+            "Tamaño" : 20,
+            "Peso" : 3 ,
+            "Valor" :7000
         },
 
         {
-            "Producto" : "Prueba 4" ,
+            "Producto" : "Coca-Cola 3 lts Triple Pack" ,
             "Proveedor" : "Coca-Cola Company" ,
-            "Tamaño" : "90",
-            "Peso" : "12" ,
-            "Valor" :"9000"
+            "Tamaño" : 90,
+            "Peso" : 12 ,
+            "Valor" :9000
         }
     
 ]}
