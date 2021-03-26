@@ -14,7 +14,7 @@ xmlns:core="sap.ui.core">
     </OverflowToolbar>
   
     <Table visible="false" id="idTablaValores" 
-    items='{modeloProductos>/Productos}' alternateRowColors="true">
+    items='{modeloProductos>/Productos}' alternateRowColors="false" growing="true" growingThreshold="12" busyIndicatorDelay="0" >
         <headerToolbar >
             <OverflowToolbar >
                 <ToolbarSpacer/>
