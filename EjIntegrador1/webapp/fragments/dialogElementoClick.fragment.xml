@@ -5,8 +5,8 @@ xmlns:core="sap.ui.core">
                     <VBox >
                     <Text text="Producto :   {modeloDialog>/Producto} "></Text>
                     <Text text="Proveedor : {modeloDialog>/Proveedor} "></Text>
-                    <Text text="Tamaño : {modeloDialog>/Tamaño} "></Text>
-                    <Text text="Peso : {modeloDialog>/Peso} "></Text>
+                    <Text text="Tamaño : {modeloDialog>/Tamaño} CMS"></Text>
+                    <Text text="Peso : {modeloDialog>/Peso} KG"></Text>
                     </VBox>
                     <beginButton>
                         <Button text="Cerrar" press=".onCloseDialog"></Button>

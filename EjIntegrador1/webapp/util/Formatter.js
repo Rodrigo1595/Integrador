@@ -24,7 +24,7 @@ sap.ui.define([],function () {
                  if(!sCodigo){
                     return;
                 }else{
-                    let nPeso = (parseFloat(sCodigo))/160;
+                    let nPeso = Math.floor( (parseFloat(sCodigo))/160);
                     return nPeso;
                 }
             }

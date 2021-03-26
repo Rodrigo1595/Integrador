@@ -93,7 +93,44 @@ sap.ui.define([
                 sap.ui.core.Fragment.byId(sFragmentId, Constants.ids.FRAGMENTS.tablaValores).setVisible(true);
 
             },
+            
+            //Mostrar Dialog al clickear en celda
+            onPressCell: function(oEvent){
+                //Buscar el item por su fuente , recuperar el contexto de pegado,seleccionar el modelo y su propiedad. Pegarlo en un nuevo modelo
+                var oItem = oEvent.getSource();
+                var oBindingContext = oItem.getBindingContext(Constants.model.modeloProductos);
+                var oModel = this.getView().getModel(Constants.model.modeloProductos);
+                var oProductoSeleccionado = oModel.getProperty(oBindingContext.getPath());
+                var oModel = new JSONModel(oProductoSeleccionado);
+                
+                this.getView().setModel(oModel,Constants.model.modeloDialog);
+                //Abrir fragmento
+                if (!this._oFragment) {
+                this._oFragment = sap.ui.xmlfragment(Constants.ids.FRAGMENTS.idDialog , Constants.routes.FRAGMENTS.dialogClick, this);
+                this.getView().addDependent(this._oFragment);
+                     }
+                this._oFragment.open();
+            
+            },
 
+            //Cerrar Dialog-Fragment con informacion del producto en tabla
+            onCloseDialog: function(){
+                this._oFragment.close();
+            },
+
+            //Funcion cambiar idioma
+            cambiarIdioma: function(){
+                if(sap.ui.getCore().getConfiguration().getLanguage() == 'EN'){
+                     sap.ui.getCore().getConfiguration().setLanguage("ES")
+                }else{
+                    //Setear lenguaje al español si esta en ingles.
+                    sap.ui.getCore().getConfiguration().setLanguage("EN")
+                }
+            },
+
+            /////////////////////////////////////           FILTROS           ///////////////////////////////////////////////////////////////
+            
+            // FILTRO SEARCHFIELD
             onChangeBuscar: function(evento){
                 //Array para bindear filtros
                 var aFilters = [];
@@ -120,36 +157,7 @@ sap.ui.define([
                 
             },
 
-            onPressCell: function(oEvent){
-                //Buscar el item por su fuente , recuperar el contexto de pegado,seleccionar el modelo y su propiedad. Pegarlo en un nuevo modelo
-                var oItem = oEvent.getSource();
-                var oBindingContext = oItem.getBindingContext(Constants.model.modeloProductos);
-                var oModel = this.getView().getModel(Constants.model.modeloProductos);
-                var oProductoSeleccionado = oModel.getProperty(oBindingContext.getPath());
-                var oModel = new JSONModel(oProductoSeleccionado);
-                
-                this.getView().setModel(oModel,Constants.model.modeloDialog);
-                //Abrir fragmento
-                if (!this._oFragment) {
-                this._oFragment = sap.ui.xmlfragment(Constants.ids.FRAGMENTS.idDialog , Constants.routes.FRAGMENTS.dialogClick, this);
-                this.getView().addDependent(this._oFragment);
-                     }
-                this._oFragment.open();
-            
-            },
-
-            //Cerrar Dialog-Fragment con informacion del producto en tabla
-            onCloseDialog: function(){
-                this._oFragment.close();
-            },
-
-            //SORT BY/////////////////////////////////////////////////
-            // Crear dialog
-            onSort: function(){
-                this.createViewSettingsDialog('EjIntegrador1.EjIntegrador1.fragments.SortDialog').open()
-            },
-
-            // Agregar configuracion de vista y opciones del dialogo de SORT Y GROUPBY
+            // Agregar configuracion de vista dialogo y opciones del dialogo de SORT / GROUPBY / Filtros
             createViewSettingsDialog: function(sDialogFragmentName){
                 var oDialog;
                     //Setear Dialogo
@@ -165,10 +173,80 @@ sap.ui.define([
                     if(DeviceAcceleration.system.desktop){
                         oDialog.addStyleClass("sapUISizeCompact");
                     }
+
+                    // Pregunta si el filtro que esta siendo aplicado es X FILTRO
+                    if(sDialogFragmentName === "EjIntegrador1.EjIntegrador1.fragments.filterDialog"){
+                        var oModelJSON = this.getOwnerComponent().getModel(Constants.model.modeloProductos);
+                        var modelOriginal = oModelJSON.getProperty("/Productos");
+                        var jsonProducto = JSON.parse(JSON.stringify(modelOriginal,['Producto']));
+                        var jsonProveedor = JSON.parse(JSON.stringify(modelOriginal,['Proveedor']));
+
+                        oDialog.setModel(oModelJSON);
+                        
+                        // Revisar duplicados
+                        jsonProducto = jsonProducto.filter(function(currentObject){
+                            if(currentObject.Producto in jsonProducto){
+                                return false;
+                            }else{
+                                jsonProducto[currentObject.Producto] = true;
+                                 return true;
+                            }
+                        });
+
+                        jsonProveedor = jsonProveedor.filter(function (currentObject){
+                            if(currentObject.Proveedor in jsonProveedor){
+                                return false;
+                            }else{
+                                jsonProveedor[currentObject.Proveedor] = true;
+                                return true;
+                            }
+                        });
+                        
+                        var ProductoFilter = [];
+                        for (var i = 0; i < jsonProducto.length; i++) {
+                            ProductoFilter.push(
+                                new sap.m.ViewSettingsItem({
+                                    text: jsonProducto[i].Producto,
+                                    key: "Producto"
+                                })
+                            );
+                        };
+
+                        var ProveedorFilter = [];
+                        for (var i = 0; i < jsonProveedor.length; i++) {
+                            ProveedorFilter.push(
+                                new sap.m.ViewSettingsItem({
+                                    text: jsonProveedor[i].Proveedor,
+                                    key: "Proveedor"
+                                })
+                            );
+                        };
+
+                        oDialog.destroyFilterItems();
+
+                        oDialog.addFilterItem(new sap.m.ViewSettingsFilterItem({
+                            key: "Productos",
+                            text: "Productos",
+                            items: ProductoFilter
+                        }));
+
+                        oDialog.addFilterItem(new sap.m.ViewSettingsFilterItem({
+                            key: "Proveedor",
+                            text: "Proveedor",
+                            items: ProveedorFilter
+                        }));
+                    }
+
                     //Retornar dialogo a la vista
                     return oDialog
             },
-            //Aplicar filtros del dialogo
+
+            //SORT BY/////////////////////////////////////////////////
+            // Crear dialog
+            onSort: function(){
+                this.createViewSettingsDialog('EjIntegrador1.EjIntegrador1.fragments.SortDialog').open()
+            },
+            //Aplicar filtros del dialogo 
             onSortDialogConfirm: function(oEvent){
                 let sFragmentId = this.getView().createId(Constants.ids.FRAGMENTS.frTabla);
                 var oTable = sap.ui.core.Fragment.byId(sFragmentId, Constants.ids.FRAGMENTS.tablaValores),
@@ -190,7 +268,7 @@ sap.ui.define([
                 this.createViewSettingsDialog('EjIntegrador1.EjIntegrador1.fragments.groupDialog').open()
             },
            
-             // Al confirma el dialogo y las opciones devuelve los argumentos para conformar los grupos
+            // Al confirma el dialogo y las opciones devuelve los argumentos para conformar los grupos
             onGroupDialogConfirm: function(oEvent){
                 let sFragmentId = this.getView().createId(Constants.ids.FRAGMENTS.frTabla);
                 var oTableGroup = sap.ui.core.Fragment.byId(sFragmentId, Constants.ids.FRAGMENTS.tablaValores),
@@ -214,15 +292,26 @@ sap.ui.define([
                 }
             },
 
-            //Funcion cambiar idioma
-            cambiarIdioma: function(){
-                if(sap.ui.getCore().getConfiguration().getLanguage() == 'EN'){
-                     sap.ui.getCore().getConfiguration().setLanguage("ES")
-                }else{
-                    //Setear lenguaje al español si esta en ingles.
-                    sap.ui.getCore().getConfiguration().setLanguage("EN")
-                }
-            }
+            // BUSQUEDA POR FILTRO //
+            
+            onFilter: function(){
+                this.createViewSettingsDialog("EjIntegrador1.EjIntegrador1.fragments.filterDialog").open();
+            },
 
+            onFilterDialogConfirm: function(oEvent){
+                let sFragmentId = this.getView().createId(Constants.ids.FRAGMENTS.frTabla);
+                var oTableFilter = sap.ui.core.Fragment.byId(sFragmentId, Constants.ids.FRAGMENTS.tablaValores),
+                    mParams= oEvent.getParameters(),
+                    oBinding = oTableFilter.getBinding("items"),
+                    aFilters=[];
+                mParams.filterItems.forEach(function(oItem){
+                    var sPath = oItem.getKey(),
+                        sOperator = FilterOperator.Contains,
+                        sValue1 = oItem.getText();
+                    var oFilter = new Filter(sPath,sOperator,sValue1);
+                    aFilters.push(oFilter);
+                });
+                oBinding.filter(aFilters);
+            }
 		});
 	});
