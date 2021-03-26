@@ -12,15 +12,24 @@ xmlns:core="sap.ui.core">
                         <Button text="{i18n>idioma}" press="cambiarIdioma" width="10%" type="Emphasized"/> 
                     </content>
     </OverflowToolbar>
-        
-    <Table visible="false" id="idTablaValores" items='{modeloProductos>/Productos}' >
-        <headerToolbar>
+  
+    <Table visible="false" id="idTablaValores" 
+    items='{modeloProductos>/Productos}' alternateRowColors="true">
+        <headerToolbar >
             <OverflowToolbar >
-                <SearchField placeholder="{i18n>phBusquedaFiltro}" width="50%" liveChange="onChangeBuscar"></SearchField>
+                <ToolbarSpacer/>
+                <SearchField placeholder="{i18n>phBusquedaFiltro}" width="30%" liveChange="onChangeBuscar"></SearchField>
                 <Button tooltip="Ordenar" icon="sap-icon://sort" press="onSort"/>
+                <Button tooltip="Agrupar" icon="sap-icon://group-2" press="onGroup"/>
             </OverflowToolbar>
         </headerToolbar>
         
+        <infoToolbar>
+            <OverflowToolbar id="vsdFilterBar" visible="false">
+            <Text id="vsdFilterLabel"/>
+            </OverflowToolbar>
+        </infoToolbar>
+
         <columns>
             <!-- Rellenar Columnas -->
             <Column>

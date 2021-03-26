@@ -24,12 +24,27 @@ sap.ui.define([
             // Cargar apenas abra la pagina
 			onInit: function () {
                 this.loadModelBase();
-             
+                
+                // Inicializar la tabla grupos
+                this.mGroupFunctions = {
+                    Producto:function(oContext){
+                        var sProducto = oContext.getProperty("Producto");
+                    return{
+                        key:sProducto,
+                        text:sProducto
+                        }
+                    },
 
+                    Proveedor:function(oContext){
+                        var sProveedor = oContext.getProperty("Proveedor");
+                    return{
+                        key:sProveedor,
+                        text:sProveedor
+                        }
+                    }
+                }
             },
             
-
-
             loadModelBase: async function(){
                 //Crear modelo con promesa asincrona
                 //Usar component para mas detallado
@@ -41,6 +56,7 @@ sap.ui.define([
                 oComponent.setModel(oNameModel,Constants.model.modeloProductos);
 
             },
+         
 
             onPressBuscar: function(){
                 //Llamar Fragment para buscar x id
@@ -105,17 +121,15 @@ sap.ui.define([
             },
 
             onPressCell: function(oEvent){
-
+                //Buscar el item por su fuente , recuperar el contexto de pegado,seleccionar el modelo y su propiedad. Pegarlo en un nuevo modelo
                 var oItem = oEvent.getSource();
                 var oBindingContext = oItem.getBindingContext(Constants.model.modeloProductos);
                 var oModel = this.getView().getModel(Constants.model.modeloProductos);
                 var oProductoSeleccionado = oModel.getProperty(oBindingContext.getPath());
-                console.log(oProductoSeleccionado);
                 var oModel = new JSONModel(oProductoSeleccionado);
                 
                 this.getView().setModel(oModel,Constants.model.modeloDialog);
-
-
+                //Abrir fragmento
                 if (!this._oFragment) {
                 this._oFragment = sap.ui.xmlfragment(Constants.ids.FRAGMENTS.idDialog , Constants.routes.FRAGMENTS.dialogClick, this);
                 this.getView().addDependent(this._oFragment);
@@ -123,11 +137,19 @@ sap.ui.define([
                 this._oFragment.open();
             
             },
-            
+
+            //Cerrar Dialog-Fragment con informacion del producto en tabla
+            onCloseDialog: function(){
+                this._oFragment.close();
+            },
+
+            //SORT BY/////////////////////////////////////////////////
+            // Crear dialog
             onSort: function(){
                 this.createViewSettingsDialog('EjIntegrador1.EjIntegrador1.fragments.SortDialog').open()
             },
 
+            // Agregar configuracion de vista y opciones del dialogo
             createViewSettingsDialog: function(sDialogFragmentName){
                 var oDialog;
                     oDialog = sap.ui.xmlfragment(sDialogFragmentName,this);
@@ -138,7 +160,7 @@ sap.ui.define([
                     }
                     return oDialog
             },
-
+            //Aplicar filtros del dialogo
             onSortDialogConfirm: function(oEvent){
                 let sFragmentId = this.getView().createId(Constants.ids.FRAGMENTS.frTabla);
                 var oTable = sap.ui.core.Fragment.byId(sFragmentId, Constants.ids.FRAGMENTS.tablaValores),
@@ -154,10 +176,37 @@ sap.ui.define([
                 oBinding.sort(aSorters);
             },
 
-            onCloseDialog: function(){
-                this._oFragment.close();
+            //GROUP BY/////////////////////////////////////////////////
+            //Inicia la funcion para abrir el dialogo de agrupamiento
+            onGroup: function(){
+                this.createViewSettingsDialog('EjIntegrador1.EjIntegrador1.fragments.groupDialog').open()
+            },
+           
+             // Al confirma el dialogo y las opciones devuelve los argumentos para conformar los grupos
+            onGroupDialogConfirm: function(oEvent){
+                let sFragmentId = this.getView().createId(Constants.ids.FRAGMENTS.frTabla);
+                var oTableGroup = sap.ui.core.Fragment.byId(sFragmentId, Constants.ids.FRAGMENTS.tablaValores),
+                mParams = oEvent.getParameters(),
+                oBinding = oTableGroup.getBinding("items"),
+                sPath,
+                bDescending,
+                vGroup,
+                aGroups=[];
+
+                if(mParams.groupItem){
+                    sPath = mParams.groupItem.getKey();
+                    bDescending = mParams.groupDescending;
+                    vGroup= this.mGroupFunctions[sPath];
+                    aGroups.push(new Sorter(sPath,bDescending,vGroup));
+                    oBinding.sort(aGroups);
+                }else{
+                    oBinding.aSorters = null;
+                    aGroups = [];
+                    oBinding.sort(aGroups);
+                }
             },
 
+            //Funcion cambiar idioma
             cambiarIdioma: function(){
                 if(sap.ui.getCore().getConfiguration().getLanguage() == 'EN'){
                      sap.ui.getCore().getConfiguration().setLanguage("ES")

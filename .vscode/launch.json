@@ -18,7 +18,7 @@
         "MOCK_LOOKUP_DIRS": "[\"webapp\"]",
         "run.config": "{\"handlerId\":\"ui5_run_config_handler_id\",\"runnableId\":\"/home/user/projects/EjercicioIntegrador1/EjIntegrador1\"}"
       },
-      "envFile": "${workspaceFolder}/EjIntegrador1/.env3",
+      "envFile": "${workspaceFolder}/EjIntegrador1/.env4",
       "preLaunchTask": "Build EjercicioIntegrador1"
     }
   ]
