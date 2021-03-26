@@ -23,8 +23,8 @@ sap.ui.define([
 
             // Cargar apenas abra la pagina
 			onInit: function () {
-                this.loadModelBase();
-                
+                    this.loadModelBase();
+                    this.Dialogs = {};
                 // Inicializar la tabla grupos
                 this.mGroupFunctions = {
                     Producto:function(oContext){
@@ -149,15 +149,23 @@ sap.ui.define([
                 this.createViewSettingsDialog('EjIntegrador1.EjIntegrador1.fragments.SortDialog').open()
             },
 
-            // Agregar configuracion de vista y opciones del dialogo
+            // Agregar configuracion de vista y opciones del dialogo de SORT Y GROUPBY
             createViewSettingsDialog: function(sDialogFragmentName){
                 var oDialog;
-                    oDialog = sap.ui.xmlfragment(sDialogFragmentName,this);
+                    //Setear Dialogo
+                    oDialog = this.Dialogs[sDialogFragmentName];
+                    //Si NO existe , crea un nuevo dialogo y le asigna la propiedad del dialogo el cual proviene (SORT O GROUP en este caso)
+                    if(!oDialog){
+                        oDialog = sap.ui.xmlfragment(sDialogFragmentName,this);
                         this.getView().addDependent(oDialog);
-                        oDialog.setFilterSearchOperator(mLibrary.StringFilterOperator.Contains);
+                        this.Dialogs[sDialogFragmentName] = oDialog;
+                    }
+                    //Setea filtro/s
+                    oDialog.setFilterSearchOperator(mLibrary.StringFilterOperator.Contains);
                     if(DeviceAcceleration.system.desktop){
                         oDialog.addStyleClass("sapUISizeCompact");
                     }
+                    //Retornar dialogo a la vista
                     return oDialog
             },
             //Aplicar filtros del dialogo
