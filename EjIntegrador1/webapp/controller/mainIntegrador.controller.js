@@ -182,7 +182,6 @@ sap.ui.define([
                       
                         var jsonProducto = JSON.parse(JSON.stringify(modelOriginal,['Producto']));
                         var jsonProveedor = JSON.parse(JSON.stringify(modelOriginal,['Proveedor']));
-                        var jsonTamano = JSON.parse(JSON.stringify(modelOriginal,['Tamano']));
                         var jsonPeso = JSON.parse(JSON.stringify(modelOriginal,['Peso']));
 
                         oDialog.setModel(oModelJSON);
@@ -251,10 +250,10 @@ sap.ui.define([
                         };
                         // EN VEZ DE AGREGAR POR PROPIEDAD DE OBJETO (QUE YA NO ES OBJETO SINO QUE AHORA HICIMOS UN ARRAY) SE AGREGA LA POSISCION EN ARRAY
                         var TamanoFilter = [];
-                        for (var i = 0; i < jsonFinalTamano.length; i++) {
+                        for (var i = 0; i < jsonTamano.length; i++) {
                             TamanoFilter.push(
                                 new sap.m.ViewSettingsItem({
-                                    text: jsonFinalTamano[i],
+                                    text: jsonTamano[i],
                                     key: "Tamano"
                                 })
                             );
