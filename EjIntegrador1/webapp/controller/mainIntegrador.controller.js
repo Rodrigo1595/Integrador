@@ -177,9 +177,13 @@ sap.ui.define([
                     // Pregunta si el filtro que esta siendo aplicado es X FILTRO
                     if(sDialogFragmentName === "EjIntegrador1.EjIntegrador1.fragments.filterDialog"){
                         var oModelJSON = this.getOwnerComponent().getModel(Constants.model.modeloProductos);
+
                         var modelOriginal = oModelJSON.getProperty("/Productos");
+                      
                         var jsonProducto = JSON.parse(JSON.stringify(modelOriginal,['Producto']));
                         var jsonProveedor = JSON.parse(JSON.stringify(modelOriginal,['Proveedor']));
+                        var jsonTamano = JSON.parse(JSON.stringify(modelOriginal,['Tamano']));
+                        var jsonPeso = JSON.parse(JSON.stringify(modelOriginal,['Peso']));
 
                         oDialog.setModel(oModelJSON);
                         
@@ -194,6 +198,7 @@ sap.ui.define([
                         });
 
                         jsonProveedor = jsonProveedor.filter(function (currentObject){
+                            
                             if(currentObject.Proveedor in jsonProveedor){
                                 return false;
                             }else{
@@ -201,7 +206,30 @@ sap.ui.define([
                                 return true;
                             }
                         });
+
+                        // COMO LOS VALORES ENTEROS(INT)  DE UN JSON SON FALSEY O TRUTHY NO SE PUEDEN EVALUAR DIRECTAMENTE EN OBJETOS CON .FILTER , ESTOS DEVUELVEN VALORES TRUE 
+                        //O FALSE JSONAMANO devuelve [{obj1:tamano}{obj2:tamano}] 
+                        // Y POR ESTO SE REPITEN EN LA FUNCION ANTERIOR O SIMPLEMENTE NO APARECEN 
+                        //Para JAVASCRIPT 1 == true & 0 == False , y no lo toma como propiedad sino como algo logico booleano.
+                        // LO MEJOR ES AGARRAR LA PROPIEDAD Y CON .map OBTENER COMO ARRAY LA PROPIEDAD Y JUNTAR TODOS LOS VALORES Y DESPUES FILTRAR COMO ARRAY.
+                
+                        let arrayJson = modelOriginal.map(x => x.Tamano)
+
+                        //AQUI SE FILTRA CON EL VALOR DIRECTAMENTE , POR LO TANTO EVALUA ESTRICTAMENTE COMO NUMERO ENTERO YA EXISTIA EN UN ELEMENTO NUEVO
+                        let jsonTamano = arrayJson.filter((element,i) => i === arrayJson.indexOf(element));
+
+
                         
+                        jsonPeso = jsonPeso.filter(function(currentObject){
+                            if(currentObject.Peso in jsonPeso){
+                                return false;
+                            }else{
+                                jsonPeso[currentObject.Peso] = true;
+                                 return true;
+                            }
+                        });
+
+                        //Crear arreglos filtros
                         var ProductoFilter = [];
                         for (var i = 0; i < jsonProducto.length; i++) {
                             ProductoFilter.push(
@@ -221,6 +249,26 @@ sap.ui.define([
                                 })
                             );
                         };
+                        // EN VEZ DE AGREGAR POR PROPIEDAD DE OBJETO (QUE YA NO ES OBJETO SINO QUE AHORA HICIMOS UN ARRAY) SE AGREGA LA POSISCION EN ARRAY
+                        var TamanoFilter = [];
+                        for (var i = 0; i < jsonFinalTamano.length; i++) {
+                            TamanoFilter.push(
+                                new sap.m.ViewSettingsItem({
+                                    text: jsonFinalTamano[i],
+                                    key: "Tamano"
+                                })
+                            );
+                        };
+
+                        var PesoFilter = [];
+                        for (var i = 0; i < jsonPeso.length; i++) {
+                            PesoFilter.push(
+                                new sap.m.ViewSettingsItem({
+                                    text: jsonPeso[i].Peso,
+                                    key: "Peso"
+                                })
+                            );
+                        };
 
                         oDialog.destroyFilterItems();
 
@@ -234,6 +282,18 @@ sap.ui.define([
                             key: "Proveedor",
                             text: "Proveedor",
                             items: ProveedorFilter
+                        }));
+
+                        oDialog.addFilterItem(new sap.m.ViewSettingsFilterItem({
+                            key: "Tamano",
+                            text: "Tamano",
+                            items: TamanoFilter
+                        }));
+
+                        oDialog.addFilterItem(new sap.m.ViewSettingsFilterItem({
+                            key: "Peso",
+                            text: "Peso",
+                            items: PesoFilter
                         }));
                     }
 
@@ -306,7 +366,7 @@ sap.ui.define([
                     aFilters=[];
                 mParams.filterItems.forEach(function(oItem){
                     var sPath = oItem.getKey(),
-                        sOperator = FilterOperator.Contains,
+                        sOperator = FilterOperator.EQ,
                         sValue1 = oItem.getText();
                     var oFilter = new Filter(sPath,sOperator,sValue1);
                     aFilters.push(oFilter);

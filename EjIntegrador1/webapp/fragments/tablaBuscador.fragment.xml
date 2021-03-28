@@ -57,7 +57,7 @@ xmlns:core="sap.ui.core">
                     <Text text='{modeloProductos>Producto}' ></Text>
                     <Text text='{modeloProductos>Proveedor}'></Text>
                     <ObjectNumber
-                        number="{modeloProductos>Tamaño}"
+                        number="{modeloProductos>Tamano}"
                         unit="Cm"
                      ></ObjectNumber>
                     <ObjectNumber
